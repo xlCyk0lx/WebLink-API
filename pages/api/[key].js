@@ -1,22 +1,22 @@
 import { MongoClient } from 'mongodb'
 
 const uri = process.env.MONGODB_URI
-let cachedClient = null
-
-async function connectToDatabase() {
-    if (cachedClient) {
-        return cachedClient
-    }
-    cachedClient = new MongoClient(uri)
-    await cachedClient.connect()
-    return cachedClient
+const options = {
+    maxPoolSize: 10,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 5000
 }
 
+let client = null
+
 export default async function handler(req, res) {
-    const { key } = req.query
+    if (!client) {
+        client = new MongoClient(uri, options)
+        await client.connect()
+    }
 
     try {
-        const client = await connectToDatabase()
+        const { key } = req.query
         const database = client.db('weblink')
         const players = database.collection('players')
         
@@ -34,9 +34,10 @@ export default async function handler(req, res) {
         })
 
     } catch (error) {
+        console.error('Database error:', error)
         return res.status(500).json({
             status: 'error',
-            message: 'Database connection error'
+            message: 'Database error'
         })
     }
 }
