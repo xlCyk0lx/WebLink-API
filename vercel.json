@@ -1,9 +1,10 @@
 {
-  "version": 2,
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/[key].js"
-    }
-  ]
-}
+    "version": 2,
+    "routes": [
+      {
+        "src": "/api/(.*)",
+        "dest": "/api/[key].js"
+      }
+    ]
+  }
+  
