@@ -38,15 +38,28 @@ function displayEmbedCode(linkId) {
 }
 
 window.copyEmbedCode = function() {
-    const embedCode = document.getElementById('embed-code').textContent;
-    navigator.clipboard.writeText(embedCode);
+    const linkId = document.getElementById('embed-code').textContent.split('key=')[1].split('"')[0];
+    const embedCode = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${linkId}"></script>`;
+    
+    // Create temporary textarea
+    const textarea = document.createElement('textarea');
+    textarea.value = embedCode;
+    document.body.appendChild(textarea);
+    
+    // Select and copy
+    textarea.select();
+    document.execCommand('copy');
+    
+    // Clean up
+    document.body.removeChild(textarea);
+    
+    // Update button text
     const copyBtn = document.querySelector('.copy-btn');
     copyBtn.textContent = 'Copied!';
     setTimeout(() => {
         copyBtn.textContent = 'Copy Code';
     }, 2000);
 };
-
 function startRealTimeUpdates() {
     const apiKey = localStorage.getItem('api_key');
     if (!apiKey) {
