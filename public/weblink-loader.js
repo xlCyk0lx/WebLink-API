@@ -13,29 +13,25 @@
     }
 
     async function init() {
-        console.log("Starting initialization...");
         await loadScript('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
         await loadScript('https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js');
-        
+    
         const firebaseConfig = {
             apiKey: "AIzaSyDQ9k2pPBp7hwWwuHXkdYKiwSIJxY3-evE",
             databaseURL: "https://weblink-api-21e8b-default-rtdb.europe-west1.firebasedatabase.app"
         };
-        
+    
         firebase.initializeApp(firebaseConfig);
-        console.log("Firebase initialized");
-        
+    
         const serverRef = firebase.database().ref('servers/' + apiKey);
         serverRef.on('value', (snapshot) => {
             const data = snapshot.val();
-            console.log("Received server data:", data);
             if (data) {
                 updateVariables(data);
                 updateContent();
             }
         });
     }
-
     function updateVariables(data) {
         window.variables = {
             online: data.server.online_players,
