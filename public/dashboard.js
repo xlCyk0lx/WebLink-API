@@ -167,7 +167,7 @@ function updateDashboard(data) {
           copyBtn.textContent = 'Copy Code';
       }, 2000);
   };
-};function formatMemory(bytes) {
+function formatMemory(bytes) {
     return `${Math.round(bytes / (1024 * 1024))} MB`;
 }
 
