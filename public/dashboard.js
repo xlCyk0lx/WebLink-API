@@ -33,21 +33,24 @@ function startRealTimeUpdates() {
 }
 
 async function checkAndCreateLink(apiKey) {
-    console.log("Checking link for:", apiKey);
-    const linkRef = ref(database, 'links/' + apiKey);
-    const snapshot = await get(linkRef);
-    console.log("Link data:", snapshot.val());
-    
-    if (!snapshot.exists()) {
-        const uniqueId = generateUniqueId();
-        console.log("Creating new link:", uniqueId);
-        await set(linkRef, uniqueId);
-        displayEmbedCode(uniqueId);
-    } else {
-        displayEmbedCode(snapshot.val());
+    console.log("Starting link check for:", apiKey);
+    try {
+        const linkRef = ref(database, 'links/' + apiKey);
+        const snapshot = await get(linkRef);
+        console.log("Link data:", snapshot.val());
+        
+        if (!snapshot.exists()) {
+            const uniqueId = generateUniqueId();
+            console.log("Creating new link:", uniqueId);
+            await set(linkRef, uniqueId);
+            displayEmbedCode(uniqueId);
+        } else {
+            displayEmbedCode(snapshot.val());
+        }
+    } catch (error) {
+        console.log("Link error:", error);
     }
-}
-function generateUniqueId() {
+}function generateUniqueId() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
     for (let i = 0; i < 16; i++) {
@@ -86,27 +89,29 @@ function updateDashboard(data) {
     // Player List
     const playerList = document.getElementById('players');
     playerList.innerHTML = '';
-    Object.entries(data.players).forEach(([name, info]) => {
-        playerList.innerHTML += `
-            <div class="player-card">
-                <h4>${name}</h4>
-                <p>Health: ${info.health}/${info.max_health}</p>
-                <p>World: ${info.location.world}</p>
-                <p>Location: ${Math.round(info.location.x)}, ${Math.round(info.location.y)}, ${Math.round(info.location.z)}</p>
-                <p>Gamemode: ${info.gamemode}</p>
-                <p>Food: ${info.food}</p>
-                <p>Playtime: ${formatPlaytime(info.playtime)}</p>
-                <p>Ping: ${info.ping}ms</p>
-                <p>Stats:</p>
-                <ul>
-                    <li>Blocks Broken: ${info.stats.blocks_broken}</li>
-                    <li>Blocks Placed: ${info.stats.blocks_placed}</li>
-                    <li>Deaths: ${info.stats.deaths}</li>
-                    <li>Kills: ${info.stats.kills}</li>
-                </ul>
-            </div>
-        `;
-    });
+    if (data.players) {
+        Object.entries(data.players).forEach(([name, info]) => {
+            playerList.innerHTML += `
+                <div class="player-card">
+                    <h4>${name}</h4>
+                    <p>Health: ${info.health}/${info.max_health}</p>
+                    <p>World: ${info.location.world}</p>
+                    <p>Location: ${Math.round(info.location.x)}, ${Math.round(info.location.y)}, ${Math.round(info.location.z)}</p>
+                    <p>Gamemode: ${info.gamemode}</p>
+                    <p>Food: ${info.food}</p>
+                    <p>Playtime: ${formatPlaytime(info.playtime)}</p>
+                    <p>Ping: ${info.ping}ms</p>
+                    <p>Stats:</p>
+                    <ul>
+                        <li>Blocks Broken: ${info.stats.blocks_broken}</li>
+                        <li>Blocks Placed: ${info.stats.blocks_placed}</li>
+                        <li>Deaths: ${info.stats.deaths}</li>
+                        <li>Kills: ${info.stats.kills}</li>
+                    </ul>
+                </div>
+            `;
+        });
+    }
 
     // Command History
     if (data.history && data.history.commands) {
@@ -128,8 +133,8 @@ function updateDashboard(data) {
         });
         document.querySelector('.data-container').appendChild(historyDiv);
     }
-}
 
+}
 function displayEmbedCode(linkId) {
     const embedSection = document.querySelector('#embed-section .stat-content');
     embedSection.innerHTML = `
