@@ -138,23 +138,12 @@ function updateDashboard(data) {
 function displayEmbedCode(linkId) {
     const embedSection = document.querySelector('#embed-section .stat-content');
     
-    const displayCode = `<script src="https://xlCyk0lx.xyz/weblink-embed.js"></script>
-<script>new WebLinkEmbed('${linkId}');</script>`;
-
-    const fullCode = `<script src="https://xlCyk0lx.xyz/weblink-embed.js"></script>
-<script>new WebLinkEmbed('${linkId}');</script>
-
-<!-- Example Usage -->
-<p>Players Online: $online/$maxonline</p>
-<p>Server TPS: $tps</p>
-<p>Memory Usage: $memory</p>
-<p>Server Version: $version</p>`;
-
+    const oneLineCode = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${linkId}"></script>`;
+    
     embedSection.innerHTML = `
         <div class="embed-info">
             <h4>Your Embed Code: <button onclick="copyEmbedCode()" class="copy-btn">Copy Code</button></h4>
-            <pre><code id="embed-code">${displayCode}</code></pre>
-            <textarea id="full-embed-code" style="display: none;">${fullCode}</textarea>
+            <pre><code id="embed-code">${oneLineCode}</code></pre>
             
             <h4>Available Variables:</h4>
             <ul class="variables-list">
@@ -165,10 +154,12 @@ function displayEmbedCode(linkId) {
                 <li><code>$motd</code> - Server MOTD</li>
                 <li><code>$version</code> - Server version</li>
             </ul>
+
+            <h4>Quick Setup:</h4>
+            <p>Just add this one line to your HTML and you're ready!</p>
         </div>
     `;
 }
-
 window.copyEmbedCode = function() {
     const fullCode = document.getElementById('full-embed-code').value;
     navigator.clipboard.writeText(fullCode);
