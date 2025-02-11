@@ -49,23 +49,22 @@
     }
 
     function updateContent() {
-        const elements = document.querySelectorAll('*');
-        elements.forEach(element => {
-            for (let node of element.childNodes) {
-                if (node.nodeType === 3) { // Text node
-                    let text = node.nodeValue;
-                    let newText = text;
-                    Object.entries(window.variables).forEach(([key, value]) => {
-                        const regex = new RegExp(`\\${key}\\b`, 'g');
-                        newText = newText.replace(regex, value);
-                    });
-                    if (text !== newText) {
-                        node.nodeValue = newText;
+        requestAnimationFrame(() => {
+            const elements = document.querySelectorAll('*');
+            elements.forEach(element => {
+                for (let node of element.childNodes) {
+                    if (node.nodeType === 3) {
+                        let text = node.nodeValue;
+                        Object.entries(window.variables).forEach(([key, value]) => {
+                            text = text.replace(`${key}`, value);
+                        });
+                        node.nodeValue = text;
                     }
                 }
-            }
+
+            });
         });
-        console.log("Content updated with values:", window.variables);
+
     }
     function formatMemory(bytes) {
         return Math.round(bytes / (1024 * 1024)) + 'MB';
