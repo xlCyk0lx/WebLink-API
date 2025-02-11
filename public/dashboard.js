@@ -133,44 +133,43 @@ function updateDashboard(data) {
         });
         document.querySelector('.data-container').appendChild(historyDiv);
     }
-  function displayEmbedCode(linkId) {
-      const embedSection = document.querySelector('#embed-section .stat-content');
+}
+
+function displayEmbedCode(linkId) {
+    const embedSection = document.querySelector('#embed-section .stat-content');
     
-      // This is what will be displayed
-      const displayCode = `<script src="https://xlCyk0lx.xyz/weblink-embed.js"></script>
-  <script>new WebLinkEmbed('${linkId}');</script>`;
+    const displayCode = `<script src="https://xlCyk0lx.xyz/weblink-embed.js"></script>
+<script>new WebLinkEmbed('${linkId}');</script>`;
 
-      // This is what will be copied
-      const fullCode = `<script src="https://xlCyk0lx.xyz/weblink-embed.js"></script>
-  <script>new WebLinkEmbed('${linkId}');</script>
-    
-  //This is an example of what you can do with the variables
-  //HTML Code
+    const fullCode = `<script src="https://xlCyk0lx.xyz/weblink-embed.js"></script>
+<script>new WebLinkEmbed('${linkId}');</script>
 
-  <p>Players Online: $online/$maxonline</p>
-  <p>Server TPS: $tps</p>
-  <p>Memory Usage: $memory</p>
-  <p>Server Version: $version</p>`;
+//This is an example of what you can do with the variables
+//HTML Code
 
-      embedSection.innerHTML = `
-          <div class="embed-info">
-              <h4>Your Embed Code: <button onclick="copyEmbedCode()" class="copy-btn">Copy Code</button></h4>
-              <pre><code id="embed-code">${displayCode}</code></pre>
-              <input type="hidden" id="full-embed-code" value="${fullCode}">
+<p>Players Online: $online/$maxonline</p>
+<p>Server TPS: $tps</p>
+<p>Memory Usage: $memory</p>
+<p>Server Version: $version</p>`;
+
+    embedSection.innerHTML = `
+        <div class="embed-info">
+            <h4>Your Embed Code: <button onclick="copyEmbedCode()" class="copy-btn">Copy Code</button></h4>
+            <pre><code id="embed-code">${displayCode}</code></pre>
+            <input type="hidden" id="full-embed-code" value="${fullCode}">
             
-              <h4>Available Variables:</h4>
-              <ul class="variables-list">
-                  <li><code>$online</code> - Online players</li>
-                  <li><code>$maxonline</code> - Max players</li>
-                  <li><code>$tps</code> - Server TPS</li>
-                  <li><code>$memory</code> - Current RAM usage</li>
-                  <li><code>$motd</code> - Server MOTD</li>
-                  <li><code>$version</code> - Server version</li>
-              </ul>
-          </div>
-      `;
-  }
-
+            <h4>Available Variables:</h4>
+            <ul class="variables-list">
+                <li><code>$online</code> - Online players</li>
+                <li><code>$maxonline</code> - Max players</li>
+                <li><code>$tps</code> - Server TPS</li>
+                <li><code>$memory</code> - Current RAM usage</li>
+                <li><code>$motd</code> - Server MOTD</li>
+                <li><code>$version</code> - Server version</li>
+            </ul>
+        </div>
+    `;
+}
   window.copyEmbedCode = function() {
       const fullCode = document.getElementById('full-embed-code').value;
       navigator.clipboard.writeText(fullCode);
