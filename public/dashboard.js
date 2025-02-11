@@ -33,7 +33,7 @@ function startRealTimeUpdates() {
 }
 
 async function checkAndCreateLink(apiKey) {
-    const linkRef = ref(database, `links/${apiKey}`);
+    const linkRef = ref(database, 'links/' + apiKey);
     const snapshot = await get(linkRef);
     
     if (!snapshot.exists()) {
@@ -172,10 +172,8 @@ function formatTimestamp(timestamp) {
     return new Date(timestamp * 1000).toLocaleTimeString();
 }
 
-// Initialize dashboard updates
 document.addEventListener('DOMContentLoaded', startRealTimeUpdates);
 
-// Global logout function
 window.logout = function() {
     localStorage.removeItem('api_key');
     window.location.href = '/';
