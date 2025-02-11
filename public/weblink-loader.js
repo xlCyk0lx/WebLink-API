@@ -54,18 +54,19 @@
             for (let node of element.childNodes) {
                 if (node.nodeType === 3) { // Text node
                     let text = node.nodeValue;
+                    let newText = text;
                     Object.entries(window.variables).forEach(([key, value]) => {
-                        // Only replace exact matches of $variablename
-                        const regex = new RegExp(`\\$${key}\\b`, 'g');
-                        text = text.replace(regex, value);
+                        const regex = new RegExp(`\\${key}\\b`, 'g');
+                        newText = newText.replace(regex, value);
                     });
-                    node.nodeValue = text;
+                    if (text !== newText) {
+                        node.nodeValue = newText;
+                    }
                 }
             }
         });
         console.log("Content updated with values:", window.variables);
     }
-
     function formatMemory(bytes) {
         return Math.round(bytes / (1024 * 1024)) + 'MB';
     }
