@@ -139,9 +139,18 @@ function updateDashboard(data) {
 function displayEmbedCode(linkId) {
     const storedKey = localStorage.getItem('api_key');
     const embedSection = document.querySelector('#embed-section .stat-content');
-    const displayCode = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${storedKey}"></script>`;
+    
+    if (!embedSection) {
+        console.log("Creating embed section");
+        const section = document.createElement('div');
+        section.id = 'embed-section';
+        section.className = 'stat-box';
+        section.innerHTML = '<h3>Website Integration</h3><div class="stat-content"></div>';
+        document.querySelector('.data-container').appendChild(section);
+    }
 
-    embedSection.innerHTML = `
+    const displayCode = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${storedKey}"></script>`;
+    document.querySelector('#embed-section .stat-content').innerHTML = `
         <div class="embed-info">
             <h4>Your Embed Code: <button onclick="copyEmbedCode()" class="copy-btn">Copy Code</button></h4>
             <pre><code id="embed-code">${displayCode}</code></pre>
@@ -158,7 +167,6 @@ function displayEmbedCode(linkId) {
         </div>
     `;
 }
-
 window.copyEmbedCode = function() {
     const storedKey = localStorage.getItem('api_key');
     const loaderScript = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${storedKey}"></script>`;
