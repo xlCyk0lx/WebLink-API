@@ -36,25 +36,20 @@ function displayEmbedCode(linkId) {
         </div>
     `;
 }
-
-window.copyEmbedCode = function() {
-    // Get the link ID from Firebase data
-    const linkRef = ref(database, 'links/' + localStorage.getItem('api_key'));
-    get(linkRef).then((snapshot) => {
-        const linkId = snapshot.val();
-        const embedCode = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${linkId}"></script>`;
-        
-        navigator.clipboard.writeText(embedCode)
-            .then(() => {
-                const copyBtn = document.querySelector('.copy-btn');
-                copyBtn.textContent = 'Copied!';
-                console.log('Copied:', embedCode);
-                setTimeout(() => {
-                    copyBtn.textContent = 'Copy Code';
-                }, 2000);
-            });
-    });
-};function startRealTimeUpdates() {
+  window.copyEmbedCode = function() {
+      const apiKey = localStorage.getItem('api_key');
+      const embedCode = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${apiKey}"></script>`;
+    
+      navigator.clipboard.writeText(embedCode)
+          .then(() => {
+              const copyBtn = document.querySelector('.copy-btn');
+              copyBtn.textContent = 'Copied!';
+              setTimeout(() => {
+                  copyBtn.textContent = 'Copy Code';
+              }, 2000);
+          });
+  };
+function startRealTimeUpdates() {
     const apiKey = localStorage.getItem('api_key');
     if (!apiKey) {
         window.location.href = '/';
@@ -70,7 +65,6 @@ window.copyEmbedCode = function() {
         }
     });
 }
-
 async function checkAndCreateLink(apiKey) {
     console.log("Starting link check for:", apiKey);
     try {
