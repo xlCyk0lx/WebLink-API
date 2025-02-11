@@ -1,97 +1,85 @@
-let updateInterval;
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
-async function fetchData() {
+const firebaseConfig = {
+    apiKey: "AIzaSyDQ9k2pPBp7hwWwuHXkdYKiwSIJxY3-evE",
+    authDomain: "weblink-api-21e8b.firebaseapp.com",
+    databaseURL: "https://weblink-api-21e8b-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "weblink-api-21e8b",
+    storageBucket: "weblink-api-21e8b.firebasestorage.app",
+    messagingSenderId: "472066780349",
+    appId: "1:472066780349:web:5fecba38082c61a08f1bd4",
+    measurementId: "G-WHN7SXVBDV"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
+function startRealTimeUpdates() {
     const apiKey = localStorage.getItem('api_key');
     if (!apiKey) {
         window.location.href = '/';
         return;
     }
-    
-    try {
-        const response = await fetch('/api/data', {
-            headers: {
-                'Authorization': apiKey
-            }
-        });
-        
-        const data = await response.json();
-        updateDashboard(data);
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
+
+    const serverRef = ref(database, 'servers/' + apiKey);
+    onValue(serverRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            updateDashboard(data);
+        }
+    });
 }
 
 function updateDashboard(data) {
     // Server Info
     document.querySelector('#server-info .stat-content').innerHTML = `
-        <p>Name: ${data.server.name}</p>
-        <p>Version: ${data.server.version}</p>
-        <p>MOTD: ${data.server.motd}</p>
+        <p>Name: ${data.name || 'N/A'}</p>
+        <p>Version: ${data.version || 'N/A'}</p>
+        <p>Status: ${data.online ? 'Online' : 'Offline'}</p>
     `;
     
     // Player Count
-    document.querySelector('#player-count .stat-content').innerHTML = `
-        <p>Online: ${data.server.online_players}/${data.server.max_players}</p>
-    `;
-    
-    // Performance
-    document.querySelector('#performance .stat-content').innerHTML = `
-        <p>TPS: ${data.performance.tps}</p>
-        <p>Memory: ${formatBytes(data.performance.memory.current)}</p>
-        <p>Uptime: ${formatUptime(data.performance.uptime)}</p>
-    `;
-    
-    // Player List
-    const playerList = document.getElementById('players');
-    playerList.innerHTML = '';
-    Object.entries(data.players).forEach(([name, info]) => {
-        playerList.innerHTML += `
-            <div class="player-card">
-                <h4>${name}</h4>
-                <p>Health: ${info.health}/${info.max_health}</p>
-                <p>Location: ${info.location.world} (${Math.round(info.location.x)}, ${Math.round(info.location.y)}, ${Math.round(info.location.z)})</p>
-            </div>
+    if (data.players) {
+        const playerCount = Object.keys(data.players).length;
+        document.querySelector('#player-count .stat-content').innerHTML = `
+            <p>Online: ${playerCount}</p>
         `;
-    });
-    
-    // Activity Log
-    const activityLog = document.getElementById('activity-log');
-    activityLog.innerHTML = '';
-    [...data.history.chat, ...data.history.commands]
-        .sort((a, b) => b.time - a.time)
-        .slice(0, 10)
-        .forEach(activity => {
-            activityLog.innerHTML += `
-                <div class="activity">
-                    <span class="time">${formatTime(activity.time)}</span>
-                    <span class="content">${activity.message || activity.command}</span>
+        
+        // Player List
+        const playerList = document.getElementById('players');
+        playerList.innerHTML = '';
+        Object.entries(data.players).forEach(([name, info]) => {
+            playerList.innerHTML += `
+                <div class="player-card">
+                    <h4>${name}</h4>
+                    <p>Health: ${info.health || 'N/A'}</p>
+                    <p>World: ${info.world || 'N/A'}</p>
                 </div>
             `;
         });
+    }
+    
+    // Performance
+    if (data.performance) {
+        document.querySelector('#performance .stat-content').innerHTML = `
+            <p>TPS: ${data.performance.tps || 'N/A'}</p>
+            <p>Memory: ${formatMemory(data.performance.memory)}</p>
+        `;
+    }
 }
 
-function formatBytes(bytes) {
-    const mb = bytes / 1024 / 1024;
-    return `${mb.toFixed(2)} MB`;
+function formatMemory(memory) {
+    if (!memory) return 'N/A';
+    return `${Math.round(memory / (1024 * 1024))} MB`;
 }
 
-function formatUptime(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    return `${hours}h ${minutes}m`;
-}
+// Start updates when page loads
+document.addEventListener('DOMContentLoaded', startRealTimeUpdates);
 
-function formatTime(timestamp) {
-    return new Date(timestamp * 1000).toLocaleTimeString();
-}
-
-// Start data updates
-document.addEventListener('DOMContentLoaded', () => {
-    fetchData();
-    updateInterval = setInterval(fetchData, 5000);
-});
-
-// Cleanup on page unload
-window.addEventListener('beforeunload', () => {
-    clearInterval(updateInterval);
-});
+// Make logout function available globally
+window.logout = function() {
+    localStorage.removeItem('api_key');
+    window.location.href = '/';
+};
