@@ -274,9 +274,24 @@ ul {
     padding: 20px;
 }
 
+.embed-info h4 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.embed-info pre {
+    background: #2d3748;
+    color: #fff;
+    padding: 15px;
+    border-radius: 6px;
+    margin: 10px 0;
+    position: relative;
+}
+
 .copy-btn {
-    padding: 5px 10px;
-    margin-left: 10px;
+    margin-left: auto;
+    padding: 5px 15px;
     background: var(--primary);
     color: white;
     border: none;
@@ -284,7 +299,6 @@ ul {
     cursor: pointer;
     font-size: 0.9rem;
 }
-
 .copy-btn:hover {
     background: var(--secondary);
 }

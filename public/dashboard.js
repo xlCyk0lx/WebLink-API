@@ -137,11 +137,20 @@ function updateDashboard(data) {
 }
 function displayEmbedCode(linkId) {
     const embedSection = document.querySelector('#embed-section .stat-content');
+    const embedCode = `<!-- Add this to your website -->
+<script src="https://xlCyk0lx.xyz/weblink-embed.js"></script>
+<script>new WebLinkEmbed('${linkId}');</script>
+
+<!-- Example usage -->
+<p>Players Online: $online/$maxonline</p>
+<p>Server TPS: $tps</p>
+<p>Memory Usage: $memory</p>
+<p>Server Version: $version</p>`;
+
     embedSection.innerHTML = `
         <div class="embed-info">
             <h4>Your Embed Code: <button onclick="copyEmbedCode()" class="copy-btn">Copy Code</button></h4>
-            <pre><code id="embed-code"><script src="https://your-domain.com/weblink-embed.js"></script>
-<script>new WebLinkEmbed('${linkId}');</script></code></pre>
+            <pre><code id="embed-code">${embedCode}</code></pre>
             
             <h4>Available Variables:</h4>
             <ul class="variables-list">
@@ -152,14 +161,9 @@ function displayEmbedCode(linkId) {
                 <li><code>$motd</code> - Server MOTD</li>
                 <li><code>$version</code> - Server version</li>
             </ul>
-            
-            <h4>Example Usage:</h4>
-            <pre><code><p>Players Online: $online/$maxonline</p></code></pre>
         </div>
     `;
-}
-
-// Add this function for the copy button
+}// Add this function for the copy button
 window.copyEmbedCode = function() {
     const embedCode = document.getElementById('embed-code').textContent;
     navigator.clipboard.writeText(embedCode);
