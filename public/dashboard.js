@@ -139,8 +139,8 @@ function displayEmbedCode(linkId) {
     const embedSection = document.querySelector('#embed-section .stat-content');
     embedSection.innerHTML = `
         <div class="embed-info">
-            <h4>Your Embed Code:</h4>
-            <pre><code><script src="https://your-domain.com/weblink-embed.js"></script>
+            <h4>Your Embed Code: <button onclick="copyEmbedCode()" class="copy-btn">Copy Code</button></h4>
+            <pre><code id="embed-code"><script src="https://your-domain.com/weblink-embed.js"></script>
 <script>new WebLinkEmbed('${linkId}');</script></code></pre>
             
             <h4>Available Variables:</h4>
@@ -159,6 +159,16 @@ function displayEmbedCode(linkId) {
     `;
 }
 
+// Add this function for the copy button
+window.copyEmbedCode = function() {
+    const embedCode = document.getElementById('embed-code').textContent;
+    navigator.clipboard.writeText(embedCode);
+    const copyBtn = document.querySelector('.copy-btn');
+    copyBtn.textContent = 'Copied!';
+    setTimeout(() => {
+        copyBtn.textContent = 'Copy Code';
+    }, 2000);
+};
 function formatMemory(bytes) {
     return `${Math.round(bytes / (1024 * 1024))} MB`;
 }

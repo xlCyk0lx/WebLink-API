@@ -273,3 +273,18 @@ ul {
     color: #666;
     padding: 20px;
 }
+
+.copy-btn {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.copy-btn:hover {
+    background: var(--secondary);
+}
