@@ -12,26 +12,7 @@
         });
     }
 
-    async function init() {
-        await loadScript('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
-        await loadScript('https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js');
-    
-        const firebaseConfig = {
-            apiKey: "AIzaSyDQ9k2pPBp7hwWwuHXkdYKiwSIJxY3-evE",
-            databaseURL: "https://weblink-api-21e8b-default-rtdb.europe-west1.firebasedatabase.app"
-        };
-    
-        firebase.initializeApp(firebaseConfig);
-    
-        const serverRef = firebase.database().ref('servers/' + apiKey);
-        serverRef.on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                updateVariables(data);
-                updateContent();
-            }
-        });
-    }    function updateVariables(data) {
+    function updateVariables(data) {
         window.variables = {
             online: data.server.online_players,
             maxonline: data.server.max_players,
@@ -50,8 +31,7 @@
                     if (node.nodeType === 3) {
                         let newText = node.nodeValue;
                         for (const [key, value] of Object.entries(window.variables)) {
-                            // Only replace when there's a $ before the variable name
-                            const regex = new RegExp(`\\$${key}\\b`, 'g');
+                            const regex = new RegExp(`\\${key}\\b`, 'g');
                             newText = newText.replace(regex, value);
                         }
                         node.nodeValue = newText;
@@ -65,15 +45,29 @@
         return Math.round(bytes / (1024 * 1024)) + 'MB';
     }
 
-    // Make sure Firebase listener is working
-    const serverRef = firebase.database().ref('servers/' + apiKey);
-    serverRef.on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            updateVariables(data);
-            updateContent();
-        }
-    });
+    async function init() {
+        console.log("Starting initialization...");
+        await loadScript('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
+        await loadScript('https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js');
+        
+        window.firebaseConfig = {
+            apiKey: "AIzaSyDQ9k2pPBp7hwWwuHXkdYKiwSIJxY3-evE",
+            databaseURL: "https://weblink-api-21e8b-default-rtdb.europe-west1.firebasedatabase.app"
+        };
+        
+        window.firebase.initializeApp(window.firebaseConfig);
+        console.log("Firebase initialized");
+        
+        const serverRef = window.firebase.database().ref('servers/' + apiKey);
+        serverRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            console.log("Received server data:", data);
+            if (data) {
+                updateVariables(data);
+                updateContent();
+            }
+        });
+    }
 
     init();
 })();
