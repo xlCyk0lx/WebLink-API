@@ -55,7 +55,9 @@
                 if (node.nodeType === 3) { // Text node
                     let text = node.nodeValue;
                     Object.entries(window.variables).forEach(([key, value]) => {
-                        text = text.replace(`${key}`, value);
+                        // Only replace exact matches of $variablename
+                        const regex = new RegExp(`\\$${key}\\b`, 'g');
+                        text = text.replace(regex, value);
                     });
                     node.nodeValue = text;
                 }
