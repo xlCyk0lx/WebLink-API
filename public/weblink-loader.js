@@ -49,25 +49,19 @@
     }
 
     function updateContent() {
-        const elements = document.getElementsByTagName('*');
-        for (let element of elements) {
-            if (element.childNodes.length > 0) {
-                for (let node of element.childNodes) {
-                    if (node.nodeType === 3) {
-                        let content = node.nodeValue;
-                        let newContent = content;
-                        
-                        for (let [key, value] of Object.entries(window.variables)) {
-                            newContent = newContent.replace(new RegExp('\\' + key, 'g'), value);
-                        }
-                        
-                        if (content !== newContent) {
-                            node.nodeValue = newContent;
-                        }
-                    }
+        const elements = document.querySelectorAll('*');
+        elements.forEach(element => {
+            for (let node of element.childNodes) {
+                if (node.nodeType === 3) { // Text node
+                    let text = node.nodeValue;
+                    Object.entries(window.variables).forEach(([key, value]) => {
+                        text = text.replace(`${key}`, value);
+                    });
+                    node.nodeValue = text;
                 }
             }
-        }
+        });
+        console.log("Content updated with values:", window.variables);
     }
 
     function formatMemory(bytes) {
