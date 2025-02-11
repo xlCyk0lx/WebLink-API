@@ -84,8 +84,14 @@ function updateDashboard(data) {
         `;
     });
 
-    // Command History
+    // Command History - Fixed version
     if (data.history && data.history.commands) {
+        // Remove existing command history
+        const existingHistory = document.querySelector('.command-history');
+        if (existingHistory) {
+            existingHistory.remove();
+        }
+
         const historyDiv = document.createElement('div');
         historyDiv.className = 'command-history';
         historyDiv.innerHTML = '<h3>Recent Commands</h3>';
