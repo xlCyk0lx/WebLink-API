@@ -134,40 +134,39 @@ function updateDashboard(data) {
         document.querySelector('.data-container').appendChild(historyDiv);
     }
 }
+  function displayEmbedCode(linkId) {
+      const embedSection = document.querySelector('#embed-section .stat-content');
+    
+      // Just the one-line loader script
+      const displayCode = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${linkId}"></script>`;
 
-function displayEmbedCode(linkId) {
-    const embedSection = document.querySelector('#embed-section .stat-content');
-    
-    const oneLineCode = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${linkId}"></script>`;
-    
-    embedSection.innerHTML = `
-        <div class="embed-info">
-            <h4>Your Embed Code: <button onclick="copyEmbedCode()" class="copy-btn">Copy Code</button></h4>
-            <pre><code id="embed-code">${oneLineCode}</code></pre>
+      embedSection.innerHTML = `
+          <div class="embed-info">
+              <h4>Your Embed Code: <button onclick="copyEmbedCode()" class="copy-btn">Copy Code</button></h4>
+              <pre><code id="embed-code">${displayCode}</code></pre>
             
-            <h4>Available Variables:</h4>
-            <ul class="variables-list">
-                <li><code>$online</code> - Online players</li>
-                <li><code>$maxonline</code> - Max players</li>
-                <li><code>$tps</code> - Server TPS</li>
-                <li><code>$memory</code> - Current RAM usage</li>
-                <li><code>$motd</code> - Server MOTD</li>
-                <li><code>$version</code> - Server version</li>
-            </ul>
+              <h4>Available Variables:</h4>
+              <ul class="variables-list">
+                  <li><code>$online</code> - Online players</li>
+                  <li><code>$maxonline</code> - Max players</li>
+                  <li><code>$tps</code> - Server TPS</li>
+                  <li><code>$memory</code> - Current RAM usage</li>
+                  <li><code>$motd</code> - Server MOTD</li>
+                  <li><code>$version</code> - Server version</li>
+              </ul>
+          </div>
+      `;
+  }
 
-            <h4>Quick Setup:</h4>
-            <p>Just add this one line to your HTML and you're ready!</p>
-        </div>
-    `;
-}
-window.copyEmbedCode = function() {
-    const fullCode = document.getElementById('full-embed-code').value;
-    navigator.clipboard.writeText(fullCode);
-    const copyBtn = document.querySelector('.copy-btn');
-    copyBtn.textContent = 'Copied!';
-    setTimeout(() => {
-        copyBtn.textContent = 'Copy Code';
-    }, 2000);
+  window.copyEmbedCode = function() {
+      const embedCode = document.getElementById('embed-code').textContent;
+      navigator.clipboard.writeText(embedCode);
+      const copyBtn = document.querySelector('.copy-btn');
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => {
+          copyBtn.textContent = 'Copy Code';
+      }, 2000);
+  };
 };function formatMemory(bytes) {
     return `${Math.round(bytes / (1024 * 1024))} MB`;
 }
