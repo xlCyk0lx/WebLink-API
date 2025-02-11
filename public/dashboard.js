@@ -33,53 +33,92 @@ function startRealTimeUpdates() {
 }
 
 function updateDashboard(data) {
-    console.log('Received data:', data); // Debug log
-
     // Server Info
     const serverInfo = document.querySelector('#server-info .stat-content');
     serverInfo.innerHTML = `
-        <p>Name: ${data.name || 'N/A'}</p>
-        <p>Version: ${data.version || 'N/A'}</p>
-        <p>MOTD: ${data.motd || 'N/A'}</p>
+        <p>Name: ${data.server.name}</p>
+        <p>Version: ${data.server.version}</p>
+        <p>MOTD: ${data.server.motd}</p>
+        <p>API: ${data.server.api_version}</p>
     `;
     
     // Player Count
     const playerCount = document.querySelector('#player-count .stat-content');
-    if (data.players) {
-        const onlinePlayers = Object.keys(data.players).length;
-        playerCount.innerHTML = `
-            <p>Online: ${onlinePlayers}</p>
-            <p>Max: ${data.maxPlayers || 'N/A'}</p>
-        `;
-        
-        // Update Player List
-        const playerList = document.getElementById('players');
-        playerList.innerHTML = '';
-        Object.entries(data.players).forEach(([name, info]) => {
-            playerList.innerHTML += `
-                <div class="player-card">
-                    <h4>${name}</h4>
-                    <p>Health: ${info.health || 'N/A'}</p>
-                    <p>World: ${info.world || 'N/A'}</p>
-                    <p>Location: ${Math.round(info.x || 0)}, ${Math.round(info.y || 0)}, ${Math.round(info.z || 0)}</p>
-                </div>
-            `;
-        });
-    }
+    playerCount.innerHTML = `
+        <p>Online: ${data.server.online_players}</p>
+        <p>Max: ${data.server.max_players}</p>
+        <p>Unique Players: ${data.performance.unique_players}</p>
+    `;
     
     // Performance Stats
     const performance = document.querySelector('#performance .stat-content');
-    if (data.performance) {
-        performance.innerHTML = `
-            <p>TPS: ${data.performance.tps || 'N/A'}</p>
-            <p>Memory: ${formatMemory(data.performance.memory || 0)}</p>
-            <p>CPU: ${data.performance.cpu || 'N/A'}%</p>
+    performance.innerHTML = `
+        <p>TPS: ${data.server.tps}</p>
+        <p>Memory: ${formatMemory(data.server.memory.current)}</p>
+        <p>Peak Memory: ${formatMemory(data.server.memory.peak)}</p>
+        <p>Uptime: ${formatUptime(data.server.uptime)}</p>
+    `;
+    
+    // Player List
+    const playerList = document.getElementById('players');
+    playerList.innerHTML = '';
+    Object.entries(data.players).forEach(([name, info]) => {
+        playerList.innerHTML += `
+            <div class="player-card">
+                <h4>${name}</h4>
+                <p>Health: ${info.health}/${info.max_health}</p>
+                <p>World: ${info.location.world}</p>
+                <p>Location: ${Math.round(info.location.x)}, ${Math.round(info.location.y)}, ${Math.round(info.location.z)}</p>
+                <p>Gamemode: ${info.gamemode}</p>
+                <p>Food: ${info.food}</p>
+                <p>Playtime: ${formatPlaytime(info.playtime)}</p>
+                <p>Ping: ${info.ping}ms</p>
+                <p>Stats:</p>
+                <ul>
+                    <li>Blocks Broken: ${info.stats.blocks_broken}</li>
+                    <li>Blocks Placed: ${info.stats.blocks_placed}</li>
+                    <li>Deaths: ${info.stats.deaths}</li>
+                    <li>Kills: ${info.stats.kills}</li>
+                </ul>
+            </div>
         `;
+    });
+
+    // Command History
+    if (data.history && data.history.commands) {
+        const historyDiv = document.createElement('div');
+        historyDiv.className = 'command-history';
+        historyDiv.innerHTML = '<h3>Recent Commands</h3>';
+        data.history.commands.slice(-5).reverse().forEach(cmd => {
+            historyDiv.innerHTML += `
+                <div class="command-entry">
+                    <span class="time">${formatTimestamp(cmd.time)}</span>
+                    <span class="command">${cmd.command}</span>
+                </div>
+            `;
+        });
+        document.querySelector('.data-container').appendChild(historyDiv);
     }
 }
 
 function formatMemory(bytes) {
     return `${Math.round(bytes / (1024 * 1024))} MB`;
+}
+
+function formatUptime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return `${hours}h ${minutes}m`;
+}
+
+function formatPlaytime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return `${hours}h ${minutes}m`;
+}
+
+function formatTimestamp(timestamp) {
+    return new Date(timestamp * 1000).toLocaleTimeString();
 }
 
 // Initialize dashboard updates
