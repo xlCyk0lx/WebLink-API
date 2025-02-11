@@ -55,19 +55,30 @@
                     if (node.nodeType === 3) {
                         let newText = node.nodeValue;
                         for (const [key, value] of Object.entries(window.variables)) {
-                            newText = newText.replace(`${key}`, value);
+                            // Only replace when there's a $ before the variable name
+                            const regex = new RegExp(`\\$${key}\\b`, 'g');
+                            newText = newText.replace(regex, value);
                         }
-                        if (node.nodeValue !== newText) {
-                            node.nodeValue = newText;
-                        }
+                        node.nodeValue = newText;
                     }
                 });
             });
         });
     }
+
     function formatMemory(bytes) {
         return Math.round(bytes / (1024 * 1024)) + 'MB';
     }
+
+    // Make sure Firebase listener is working
+    const serverRef = firebase.database().ref('servers/' + apiKey);
+    serverRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            updateVariables(data);
+            updateContent();
+        }
+    });
 
     init();
 })();
