@@ -144,9 +144,7 @@ function displayEmbedCode(linkId) {
     const fullCode = `<script src="https://xlCyk0lx.xyz/weblink-embed.js"></script>
 <script>new WebLinkEmbed('${linkId}');</script>
 
-//This is an example of what you can do with the variables
-//HTML Code
-
+<!-- Example Usage -->
 <p>Players Online: $online/$maxonline</p>
 <p>Server TPS: $tps</p>
 <p>Memory Usage: $memory</p>
@@ -156,7 +154,7 @@ function displayEmbedCode(linkId) {
         <div class="embed-info">
             <h4>Your Embed Code: <button onclick="copyEmbedCode()" class="copy-btn">Copy Code</button></h4>
             <pre><code id="embed-code">${displayCode}</code></pre>
-            <input type="hidden" id="full-embed-code" value="${fullCode}">
+            <textarea id="full-embed-code" style="display: none;">${fullCode}</textarea>
             
             <h4>Available Variables:</h4>
             <ul class="variables-list">
@@ -170,16 +168,16 @@ function displayEmbedCode(linkId) {
         </div>
     `;
 }
-  window.copyEmbedCode = function() {
-      const fullCode = document.getElementById('full-embed-code').value;
-      navigator.clipboard.writeText(fullCode);
-      const copyBtn = document.querySelector('.copy-btn');
-      copyBtn.textContent = 'Copied!';
-      setTimeout(() => {
-          copyBtn.textContent = 'Copy Code';
-      }, 2000);
-  };
-function formatMemory(bytes) {
+
+window.copyEmbedCode = function() {
+    const fullCode = document.getElementById('full-embed-code').value;
+    navigator.clipboard.writeText(fullCode);
+    const copyBtn = document.querySelector('.copy-btn');
+    copyBtn.textContent = 'Copied!';
+    setTimeout(() => {
+        copyBtn.textContent = 'Copy Code';
+    }, 2000);
+};function formatMemory(bytes) {
     return `${Math.round(bytes / (1024 * 1024))} MB`;
 }
 
