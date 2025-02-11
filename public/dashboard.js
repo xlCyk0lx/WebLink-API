@@ -33,21 +33,26 @@ function startRealTimeUpdates() {
 }
 
 function updateDashboard(data) {
+    console.log('Received data:', data); // Debug log
+
     // Server Info
-    document.querySelector('#server-info .stat-content').innerHTML = `
+    const serverInfo = document.querySelector('#server-info .stat-content');
+    serverInfo.innerHTML = `
         <p>Name: ${data.name || 'N/A'}</p>
         <p>Version: ${data.version || 'N/A'}</p>
-        <p>Status: ${data.online ? 'Online' : 'Offline'}</p>
+        <p>MOTD: ${data.motd || 'N/A'}</p>
     `;
     
     // Player Count
+    const playerCount = document.querySelector('#player-count .stat-content');
     if (data.players) {
-        const playerCount = Object.keys(data.players).length;
-        document.querySelector('#player-count .stat-content').innerHTML = `
-            <p>Online: ${playerCount}</p>
+        const onlinePlayers = Object.keys(data.players).length;
+        playerCount.innerHTML = `
+            <p>Online: ${onlinePlayers}</p>
+            <p>Max: ${data.maxPlayers || 'N/A'}</p>
         `;
         
-        // Player List
+        // Update Player List
         const playerList = document.getElementById('players');
         playerList.innerHTML = '';
         Object.entries(data.players).forEach(([name, info]) => {
@@ -56,29 +61,31 @@ function updateDashboard(data) {
                     <h4>${name}</h4>
                     <p>Health: ${info.health || 'N/A'}</p>
                     <p>World: ${info.world || 'N/A'}</p>
+                    <p>Location: ${Math.round(info.x || 0)}, ${Math.round(info.y || 0)}, ${Math.round(info.z || 0)}</p>
                 </div>
             `;
         });
     }
     
-    // Performance
+    // Performance Stats
+    const performance = document.querySelector('#performance .stat-content');
     if (data.performance) {
-        document.querySelector('#performance .stat-content').innerHTML = `
+        performance.innerHTML = `
             <p>TPS: ${data.performance.tps || 'N/A'}</p>
-            <p>Memory: ${formatMemory(data.performance.memory)}</p>
+            <p>Memory: ${formatMemory(data.performance.memory || 0)}</p>
+            <p>CPU: ${data.performance.cpu || 'N/A'}%</p>
         `;
     }
 }
 
-function formatMemory(memory) {
-    if (!memory) return 'N/A';
-    return `${Math.round(memory / (1024 * 1024))} MB`;
+function formatMemory(bytes) {
+    return `${Math.round(bytes / (1024 * 1024))} MB`;
 }
 
-// Start updates when page loads
+// Initialize dashboard updates
 document.addEventListener('DOMContentLoaded', startRealTimeUpdates);
 
-// Make logout function available globally
+// Global logout function
 window.logout = function() {
     localStorage.removeItem('api_key');
     window.location.href = '/';
