@@ -50,7 +50,9 @@ async function checkAndCreateLink(apiKey) {
     } catch (error) {
         console.log("Link error:", error);
     }
-}function generateUniqueId() {
+}
+
+function generateUniqueId() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
     for (let i = 0; i < 16; i++) {
@@ -133,16 +135,9 @@ function updateDashboard(data) {
         });
         document.querySelector('.data-container').appendChild(historyDiv);
     }
-function saveApiKey(apiKey) {
-    localStorage.setItem('weblink_api_key', apiKey);
-}
-
-function getStoredApiKey() {
-    return localStorage.getItem('weblink_api_key');
-}
 
 function displayEmbedCode(linkId) {
-    const storedKey = getStoredApiKey();
+    const storedKey = localStorage.getItem('api_key');
     const embedSection = document.querySelector('#embed-section .stat-content');
     const displayCode = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${storedKey}"></script>`;
 
@@ -165,7 +160,7 @@ function displayEmbedCode(linkId) {
 }
 
 window.copyEmbedCode = function() {
-    const storedKey = getStoredApiKey();
+    const storedKey = localStorage.getItem('api_key');
     const loaderScript = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${storedKey}"></script>`;
     navigator.clipboard.writeText(loaderScript);
     const copyBtn = document.querySelector('.copy-btn');
@@ -173,8 +168,7 @@ window.copyEmbedCode = function() {
     setTimeout(() => {
         copyBtn.textContent = 'Copy Code';
     }, 2000);
-};
-  };function formatMemory(bytes) {
+};  };function formatMemory(bytes) {
     return `${Math.round(bytes / (1024 * 1024))} MB`;
 }
 
