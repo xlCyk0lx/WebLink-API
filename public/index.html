@@ -48,11 +48,6 @@
                 const snapshot = await get(serverRef);
                 
                 if (snapshot.exists()) {
-                    const serverData = snapshot.val();
-                    if (!serverData.online) {
-                        displayError('Server is currently offline', 'ERR_SERVER_OFFLINE');
-                        return;
-                    }
                     localStorage.setItem('api_key', apiKey);
                     window.location.href = '/dashboard.html';
                 } else {
@@ -64,12 +59,17 @@
             }
         }
 
+        // Handle Enter key press
+        document.getElementById('api-key').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkApiKey();
+            }
+        });
+
         function displayError(message, code) {
             const errorDiv = document.getElementById('error-message');
             errorDiv.innerHTML = `Error ${code}: ${message}`;
             errorDiv.style.display = 'block';
-            
-            // Log error for tracking
             console.error(`WebLink Error: ${code} - ${message}`);
         }
     </script>
@@ -83,6 +83,46 @@
             background-color: #fee2e2;
             display: none;
             font-size: 14px;
+        }
+        
+        .login-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-form h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #1f2937;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
         }
     </style>
 </body>
