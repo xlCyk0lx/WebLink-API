@@ -133,39 +133,47 @@ function updateDashboard(data) {
         });
         document.querySelector('.data-container').appendChild(historyDiv);
     }
+function saveApiKey(apiKey) {
+    localStorage.setItem('weblink_api_key', apiKey);
 }
-  function displayEmbedCode(linkId) {
-      const embedSection = document.querySelector('#embed-section .stat-content');
-    
-      // Just the one-line loader script
-      const displayCode = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${linkId}"></script>`;
 
-      embedSection.innerHTML = `
-          <div class="embed-info">
-              <h4>Your Embed Code: <button onclick="copyEmbedCode()" class="copy-btn">Copy Code</button></h4>
-              <pre><code id="embed-code">${displayCode}</code></pre>
+function getStoredApiKey() {
+    return localStorage.getItem('weblink_api_key');
+}
+
+function displayEmbedCode(linkId) {
+    const storedKey = getStoredApiKey();
+    const embedSection = document.querySelector('#embed-section .stat-content');
+    const displayCode = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${storedKey}"></script>`;
+
+    embedSection.innerHTML = `
+        <div class="embed-info">
+            <h4>Your Embed Code: <button onclick="copyEmbedCode()" class="copy-btn">Copy Code</button></h4>
+            <pre><code id="embed-code">${displayCode}</code></pre>
             
-              <h4>Available Variables:</h4>
-              <ul class="variables-list">
-                  <li><code>$online</code> - Online players</li>
-                  <li><code>$maxonline</code> - Max players</li>
-                  <li><code>$tps</code> - Server TPS</li>
-                  <li><code>$memory</code> - Current RAM usage</li>
-                  <li><code>$motd</code> - Server MOTD</li>
-                  <li><code>$version</code> - Server version</li>
-              </ul>
-          </div>
-      `;
-  }
+            <h4>Available Variables:</h4>
+            <ul class="variables-list">
+                <li><code>$online</code> - Online players</li>
+                <li><code>$maxonline</code> - Max players</li>
+                <li><code>$tps</code> - Server TPS</li>
+                <li><code>$memory</code> - Current RAM usage</li>
+                <li><code>$motd</code> - Server MOTD</li>
+                <li><code>$version</code> - Server version</li>
+            </ul>
+        </div>
+    `;
+}
 
-  window.copyEmbedCode = function() {
-      const loaderScript = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${document.getElementById('embed-code').textContent.split('key=')[1].split('"')[0]}"></script>`;
-      navigator.clipboard.writeText(loaderScript);
-      const copyBtn = document.querySelector('.copy-btn');
-      copyBtn.textContent = 'Copied!';
-      setTimeout(() => {
-          copyBtn.textContent = 'Copy Code';
-      }, 2000);
+window.copyEmbedCode = function() {
+    const storedKey = getStoredApiKey();
+    const loaderScript = `<script src="https://xlcyk0lx.xyz/weblink-loader.js?key=${storedKey}"></script>`;
+    navigator.clipboard.writeText(loaderScript);
+    const copyBtn = document.querySelector('.copy-btn');
+    copyBtn.textContent = 'Copied!';
+    setTimeout(() => {
+        copyBtn.textContent = 'Copy Code';
+    }, 2000);
+};
   };function formatMemory(bytes) {
     return `${Math.round(bytes / (1024 * 1024))} MB`;
 }
