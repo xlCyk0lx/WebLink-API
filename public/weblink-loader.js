@@ -45,6 +45,7 @@
             motd: data.server.motd,
             version: data.server.version
         };
+        console.log("Variables ready for replacement:", window.variables);
     }
 
     function updateContent() {
