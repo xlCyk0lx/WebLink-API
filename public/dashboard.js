@@ -33,18 +33,20 @@ function startRealTimeUpdates() {
 }
 
 async function checkAndCreateLink(apiKey) {
+    console.log("Checking link for:", apiKey);
     const linkRef = ref(database, 'links/' + apiKey);
     const snapshot = await get(linkRef);
+    console.log("Link data:", snapshot.val());
     
     if (!snapshot.exists()) {
         const uniqueId = generateUniqueId();
+        console.log("Creating new link:", uniqueId);
         await set(linkRef, uniqueId);
         displayEmbedCode(uniqueId);
     } else {
         displayEmbedCode(snapshot.val());
     }
 }
-
 function generateUniqueId() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
