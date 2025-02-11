@@ -12,25 +12,78 @@
             <h2>WebLink Login</h2>
             <input type="text" id="api-key" placeholder="Enter API Key">
             <button onclick="checkApiKey()">Continue</button>
-        </div>
-
-        <div id="credentials-setup" class="login-form hidden">
-            <h2>Setup Account</h2>
-            <input type="text" id="setup-username" placeholder="Choose Username">
-            <input type="password" id="setup-password" placeholder="Choose Password">
-            <button onclick="setupCredentials()">Create Account</button>
-        </div>
-
-        <div id="regular-login" class="login-form hidden">
-            <h2>Login</h2>
-            <input type="text" id="username" placeholder="Username">
-            <input type="password" id="password" placeholder="Password">
-            <button onclick="login()">Login</button>
+            <div id="error-message" class="error-text"></div>
         </div>
     </div>
-    
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-database.js"></script>
-    <script src="/app.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQ9k2pPBp7hwWwuHXkdYKiwSIJxY3-evE",
+            authDomain: "weblink-api-21e8b.firebaseapp.com",
+            databaseURL: "https://weblink-api-21e8b-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "weblink-api-21e8b",
+            storageBucket: "weblink-api-21e8b.firebasestorage.app",
+            messagingSenderId: "472066780349",
+            appId: "1:472066780349:web:5fecba38082c61a08f1bd4",
+            measurementId: "G-WHN7SXVBDV"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        window.checkApiKey = async function() {
+            const apiKey = document.getElementById('api-key').value;
+            const errorDiv = document.getElementById('error-message');
+            
+            if (!apiKey) {
+                displayError('Please enter an API key', 'ERR_EMPTY_KEY');
+                return;
+            }
+
+            try {
+                const serverRef = ref(database, 'servers/' + apiKey);
+                const snapshot = await get(serverRef);
+                
+                if (snapshot.exists()) {
+                    const serverData = snapshot.val();
+                    if (!serverData.online) {
+                        displayError('Server is currently offline', 'ERR_SERVER_OFFLINE');
+                        return;
+                    }
+                    localStorage.setItem('api_key', apiKey);
+                    window.location.href = '/dashboard.html';
+                } else {
+                    displayError('Invalid API key', 'ERR_INVALID_KEY');
+                }
+            } catch (error) {
+                console.error('Firebase Error:', error);
+                displayError('Connection error. Please try again.', 'ERR_CONNECTION');
+            }
+        }
+
+        function displayError(message, code) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.innerHTML = `Error ${code}: ${message}`;
+            errorDiv.style.display = 'block';
+            
+            // Log error for tracking
+            console.error(`WebLink Error: ${code} - ${message}`);
+        }
+    </script>
+
+    <style>
+        .error-text {
+            color: #dc2626;
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            background-color: #fee2e2;
+            display: none;
+            font-size: 14px;
+        }
+    </style>
 </body>
 </html>
