@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDQ9k2pPBp7hwWwuHXkdYKiwSIJxY3-evE",
@@ -12,7 +12,6 @@ const firebaseConfig = {
     measurementId: "G-WHN7SXVBDV"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
@@ -28,8 +27,31 @@ function startRealTimeUpdates() {
         const data = snapshot.val();
         if (data) {
             updateDashboard(data);
+            checkAndCreateLink(apiKey);
         }
     });
+}
+
+async function checkAndCreateLink(apiKey) {
+    const linkRef = ref(database, `links/${apiKey}`);
+    const snapshot = await get(linkRef);
+    
+    if (!snapshot.exists()) {
+        const uniqueId = generateUniqueId();
+        await set(linkRef, uniqueId);
+        displayEmbedCode(uniqueId);
+    } else {
+        displayEmbedCode(snapshot.val());
+    }
+}
+
+function generateUniqueId() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 16; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
 }
 
 function updateDashboard(data) {
@@ -84,9 +106,8 @@ function updateDashboard(data) {
         `;
     });
 
-    // Command History - Fixed version
+    // Command History
     if (data.history && data.history.commands) {
-        // Remove existing command history
         const existingHistory = document.querySelector('.command-history');
         if (existingHistory) {
             existingHistory.remove();
@@ -105,6 +126,30 @@ function updateDashboard(data) {
         });
         document.querySelector('.data-container').appendChild(historyDiv);
     }
+}
+
+function displayEmbedCode(linkId) {
+    const embedSection = document.querySelector('#embed-section .stat-content');
+    embedSection.innerHTML = `
+        <div class="embed-info">
+            <h4>Your Embed Code:</h4>
+            <pre><code><script src="https://your-domain.com/weblink-embed.js"></script>
+<script>new WebLinkEmbed('${linkId}');</script></code></pre>
+            
+            <h4>Available Variables:</h4>
+            <ul class="variables-list">
+                <li><code>$online</code> - Online players</li>
+                <li><code>$maxonline</code> - Max players</li>
+                <li><code>$tps</code> - Server TPS</li>
+                <li><code>$memory</code> - Current RAM usage</li>
+                <li><code>$motd</code> - Server MOTD</li>
+                <li><code>$version</code> - Server version</li>
+            </ul>
+            
+            <h4>Example Usage:</h4>
+            <pre><code><p>Players Online: $online/$maxonline</p></code></pre>
+        </div>
+    `;
 }
 
 function formatMemory(bytes) {
