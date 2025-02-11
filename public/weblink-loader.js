@@ -31,8 +31,7 @@
                 updateContent();
             }
         });
-    }
-    function updateVariables(data) {
+    }    function updateVariables(data) {
         window.variables = {
             online: data.server.online_players,
             maxonline: data.server.max_players,
