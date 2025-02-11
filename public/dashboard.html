@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebLink Dashboard</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="dashboard">
+        <nav>
+            <div class="logo">WebLink Dashboard</div>
+            <button onclick="logout()">Logout</button>
+        </nav>
+        
+        <div class="stats-container">
+            <div class="stat-card" id="server-info">
+                <h3>Server Info</h3>
+                <div class="stat-content"></div>
+            </div>
+            
+            <div class="stat-card" id="player-count">
+                <h3>Players Online</h3>
+                <div class="stat-content"></div>
+            </div>
+            
+            <div class="stat-card" id="performance">
+                <h3>Performance</h3>
+                <div class="stat-content"></div>
+            </div>
+        </div>
+        
+        <div class="data-container">
+            <div class="player-list">
+                <h3>Online Players</h3>
+                <div id="players"></div>
+            </div>
+            
+            <div class="history">
+                <h3>Recent Activity</h3>
+                <div id="activity-log"></div>
+            </div>
+        </div>
+    </div>
+    <script src="/dashboard.js"></script>
+</body>
+</html>

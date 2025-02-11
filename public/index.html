@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebLink Dashboard</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div id="api-login" class="login-form">
+            <h2>WebLink Login</h2>
+            <input type="text" id="api-key" placeholder="Enter API Key">
+            <button onclick="checkApiKey()">Continue</button>
+        </div>
+
+        <div id="credentials-setup" class="login-form hidden">
+            <h2>Setup Account</h2>
+            <input type="text" id="setup-username" placeholder="Choose Username">
+            <input type="password" id="setup-password" placeholder="Choose Password">
+            <button onclick="setupCredentials()">Create Account</button>
+        </div>
+
+        <div id="regular-login" class="login-form hidden">
+            <h2>Login</h2>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+        </div>
+    </div>
+    <script src="/app.js"></script>
+</body>
+</html>
