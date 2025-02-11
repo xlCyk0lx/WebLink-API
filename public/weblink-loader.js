@@ -50,21 +50,20 @@
 
     function updateContent() {
         requestAnimationFrame(() => {
-            const elements = document.querySelectorAll('*');
-            elements.forEach(element => {
-                for (let node of element.childNodes) {
+            document.querySelectorAll('*').forEach(element => {
+                element.childNodes.forEach(node => {
                     if (node.nodeType === 3) {
-                        let text = node.nodeValue;
-                        Object.entries(window.variables).forEach(([key, value]) => {
-                            text = text.replace(`${key}`, value);
-                        });
-                        node.nodeValue = text;
+                        let newText = node.nodeValue;
+                        for (const [key, value] of Object.entries(window.variables)) {
+                            newText = newText.replace(`${key}`, value);
+                        }
+                        if (node.nodeValue !== newText) {
+                            node.nodeValue = newText;
+                        }
                     }
-                }
-
+                });
             });
         });
-
     }
     function formatMemory(bytes) {
         return Math.round(bytes / (1024 * 1024)) + 'MB';
