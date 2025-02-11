@@ -1,6 +1,7 @@
 (function() {
     const urlParams = new URLSearchParams(document.currentScript.src.split('?')[1]);
     const apiKey = urlParams.get('key');
+    console.log("Loading data for API key:", apiKey);
 
     function loadScript(src) {
         return new Promise((resolve) => {
@@ -12,6 +13,7 @@
     }
 
     async function init() {
+        console.log("Starting initialization...");
         await loadScript('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
         await loadScript('https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js');
         
@@ -21,10 +23,12 @@
         };
         
         firebase.initializeApp(firebaseConfig);
+        console.log("Firebase initialized");
         
         const serverRef = firebase.database().ref('servers/' + apiKey);
         serverRef.on('value', (snapshot) => {
             const data = snapshot.val();
+            console.log("Received server data:", data);
             if (data) {
                 updateVariables(data);
                 updateContent();
