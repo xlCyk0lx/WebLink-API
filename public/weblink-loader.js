@@ -24,10 +24,11 @@
         console.log("Exact values being set:", window.variables);
     }
     function updateContent() {
-        document.body.innerHTML = document.body.innerHTML.replace(/\$(\w+)/g, (match, key) => {
-            return window.variables[key] || match;
+        const content = document.body.innerHTML;
+        const updatedContent = content.replace(/\$(\w+)/g, (match, variable) => {
+            return window.variables[variable] ?? match;
         });
-        console.log("Content updated with values:", window.variables);
+        document.body.innerHTML = updatedContent;
     }
     function formatMemory(bytes) {
         return Math.round(bytes / (1024 * 1024)) + 'MB';
