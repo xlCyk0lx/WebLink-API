@@ -16,11 +16,12 @@
         window.variables = {
             online: data.server.online_players,
             maxonline: data.server.max_players,
-            tps: data.server.tps,
+            tps: data.performance.tps,
             memory: formatMemory(data.server.memory.current),
             motd: data.server.motd,
             version: data.server.version
         };
+        console.log("Exact values being set:", window.variables);
     }
     function updateContent() {
         requestAnimationFrame(() => {
