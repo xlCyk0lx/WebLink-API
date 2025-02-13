@@ -24,22 +24,24 @@
         console.log("Exact values being set:", window.variables);
     }
     function updateContent() {
-        requestAnimationFrame(() => {
-            document.querySelectorAll('*').forEach(element => {
-                element.childNodes.forEach(node => {
-                    if (node.nodeType === 3) {
-                        let newText = node.nodeValue;
-                        for (const [key, value] of Object.entries(window.variables)) {
-                            const regex = new RegExp(`\\${key}\\b`, 'g');
-                            newText = newText.replace(regex, value);
-                        }
-                        node.nodeValue = newText;
-                    }
-                });
+        const textNodes = [];
+        document.querySelectorAll('*').forEach(element => {
+            element.childNodes.forEach(node => {
+                if (node.nodeType === 3) textNodes.push(node);
             });
         });
-    }
 
+        textNodes.forEach(node => {
+            let text = node.nodeValue;
+            Object.entries(window.variables).forEach(([key, value]) => {
+                const regex = new RegExp(`\\${key}`, 'g');
+                text = text.replace(regex, value);
+            });
+            node.nodeValue = text;
+        });
+    
+        console.log("Text nodes updated with:", window.variables);
+    }
     function formatMemory(bytes) {
         return Math.round(bytes / (1024 * 1024)) + 'MB';
     }
