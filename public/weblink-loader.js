@@ -58,10 +58,34 @@
         document.body.innerHTML = updatedContent;
     }
 
-    function formatMemory(bytes) {
-        return Math.round(bytes / (1024 * 1024)) + 'MB';
+    function formatDifficulty(level) {
+        const difficulties = {
+            0: "Peaceful",
+            1: "Easy",
+            2: "Normal",
+            3: "Hard"
+        };
+        return difficulties[level] || level;
     }
 
+    function formatGameTime(ticks) {
+        // Convert ticks to Minecraft time
+        const hour = Math.floor((ticks % 24000) / 1000);
+        const minutes = Math.floor(((ticks % 1000) / 1000) * 60);
+    
+        // Format to 12-hour time with AM/PM
+        const period = hour >= 12 ? "PM" : "AM";
+        const formattedHour = hour % 12 || 12;
+        return `${formattedHour}:${minutes.toString().padStart(2, '0')} ${period}`;
+    }
+
+    function formatMemory(bytes) {
+        if (bytes >= 1073741824) {
+            return (bytes / 1073741824).toFixed(2) + ' GB';
+        } else {
+            return (bytes / 1048576).toFixed(0) + ' MB';
+        }
+    }
     function formatUptime(seconds) {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
