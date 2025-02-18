@@ -14,15 +14,42 @@
 
     function updateVariables(data) {
         window.variables = {
-            online: data.server.online_players,
-            maxonline: data.server.max_players,
-            tps: data.performance.tps,
-            memory: formatMemory(data.server.memory.current),
+            // Server Info
+            name: data.server.name,
+            version: data.server.version,
             motd: data.server.motd,
-            version: data.server.version
+            api_version: data.server.api_version,
+            difficulty: data.server.difficulty,
+            port: data.server.port,
+            whitelist: data.server.whitelist ? 'Enabled' : 'Disabled',
+            
+            // Performance
+            tps: data.performance.tps,
+            uptime: formatUptime(data.performance.uptime),
+            unique_players: data.performance.unique_players,
+            peak_players: data.performance.peak_players,
+            total_playtime: formatUptime(data.performance.total_playtime),
+            
+            // Memory
+            memory: formatMemory(data.server.memory.current),
+            peak_memory: formatMemory(data.server.memory.peak),
+            
+            // World Info
+            world_name: data.worlds.world.name,
+            world_difficulty: data.worlds.world.difficulty,
+            world_entities: data.worlds.world.entity_count,
+            world_chunks: data.worlds.world.loaded_chunks,
+            world_players: data.worlds.world.player_count,
+            world_seed: data.worlds.world.seed,
+            world_time: data.worlds.world.time,
+            
+            // Player Info
+            online: data.server.online_players,
+            maxonline: data.server.max_players
         };
-        console.log("Exact values being set:", window.variables);
+        console.log("Variables ready for replacement:", window.variables);
     }
+
     function updateContent() {
         const content = document.body.innerHTML;
         const updatedContent = content.replace(/\$(\w+)/g, (match, variable) => {
@@ -30,8 +57,15 @@
         });
         document.body.innerHTML = updatedContent;
     }
+
     function formatMemory(bytes) {
         return Math.round(bytes / (1024 * 1024)) + 'MB';
+    }
+
+    function formatUptime(seconds) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        return `${hours}h ${minutes}m`;
     }
 
     async function init() {
