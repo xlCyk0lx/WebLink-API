@@ -19,7 +19,7 @@
             version: data.server.version,
             motd: data.server.motd,
             api_version: data.server.api_version,
-            difficulty: data.server.difficulty,
+            difficulty: formatDifficulty(data.server.difficulty),
             port: data.server.port,
             whitelist: data.server.whitelist ? 'Enabled' : 'Disabled',
             
@@ -36,20 +36,17 @@
             
             // World Info
             world_name: data.worlds.world.name,
-            world_difficulty: data.worlds.world.difficulty,
+            world_difficulty: formatDifficulty(data.worlds.world.difficulty),
             world_entities: data.worlds.world.entity_count,
             world_chunks: data.worlds.world.loaded_chunks,
             world_players: data.worlds.world.player_count,
             world_seed: data.worlds.world.seed,
-            world_time: data.worlds.world.time,
+            world_time: formatGameTime(data.worlds.world.time),
             
-            // Player Info
             online: data.server.online_players,
             maxonline: data.server.max_players
         };
-        console.log("Variables ready for replacement:", window.variables);
     }
-
     function updateContent() {
         const content = document.body.innerHTML;
         const updatedContent = content.replace(/\$(\w+)/g, (match, variable) => {
